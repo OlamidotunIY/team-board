@@ -1,16 +1,18 @@
-import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { RegisterDto, RegisterResponse } from './dto/register.dto';
-import { BadRequestException, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { LoginDto, LoginResponse } from './dto/login.dto';
-import { LocalAuthGuard } from './guards/gql-local.guard';
+import { JwtAuthGuard } from './guards/gql-jwt.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
+import type { AuthenticatedUser } from './decorators/current-user.decorator';
+import { UserEntity } from '../user/entity/user.entity';
 
 @Resolver()
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
   @Mutation(() => RegisterResponse)
   async register(
     @Args('registerInput') registerDto: RegisterDto,
@@ -20,7 +22,6 @@ export class AuthResolver {
     return { user };
   }
 
-  @UseGuards(LocalAuthGuard)
   @Mutation(() => LoginResponse)
   async login(
     @Args('loginInput') loginDto: LoginDto,
@@ -29,7 +30,7 @@ export class AuthResolver {
     return this.authService.login(loginDto, context.res);
   }
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => String)
   async logout(@Context() context: { res: Response }) {
     return this.authService.logout(context.res);
@@ -38,5 +39,11 @@ export class AuthResolver {
   @Mutation(() => String)
   async refreshToken(@Context() context: { req: Request; res: Response }) {
     return this.authService.refreshToken(context.req, context.res);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => UserEntity)
+  me(@CurrentUser() user: AuthenticatedUser) {
+    return user;
   }
 }

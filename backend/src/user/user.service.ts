@@ -11,9 +11,11 @@ export class UserService {
   ) {}
 
   async getUser(email: string) {
-    return this.user.findOne({
-      email,
-    });
+    return this.user.findOne({ email }).select('+passwordHash');
+  }
+
+  async getUserById(id: string) {
+    return this.user.findById(id);
   }
 
   async createUser(dto: RegisterDto) {
@@ -23,5 +25,9 @@ export class UserService {
       passwordHash: dto.password,
       isEmailVerified: false,
     });
+  }
+
+  async markLastLogin(id: string) {
+    return this.user.findByIdAndUpdate(id, { lastLoginAt: new Date() });
   }
 }

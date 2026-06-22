@@ -17,6 +17,6 @@ export class UserEntity {
   @Field({ defaultValue: true })
   isActive!: boolean;
 
-  @Field()
-  lastLoginAt!: Date;
+  @Field({ nullable: true })
+  lastLoginAt?: Date;
 }

@@ -5,52 +5,76 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
+import { authCookieNames } from './constants';
 import { Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from '../user/entity/user.entity';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { ConfigService } from '@nestjs/config';
+import { UserDocument } from '../user/schema/user.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
-  private async issueTokens(user: UserEntity, res: Response) {
-    const payload = { fullname: user.name, sub: user.id };
+  private getCookieOptions(maxAge: number) {
+    return {
+      httpOnly: true,
+      secure: this.configService.get('NODE_ENV') === 'production',
+      sameSite: 'lax' as const,
+      maxAge,
+    };
+  }
 
-    const accessToken = this.jwtService.sign(
-      { ...payload },
-      {
-        secret: jwtConstants.secret,
-        expiresIn: '7sec',
-      },
+  private userPayload(user: UserDocument | UserEntity) {
+    return {
+      sub: user.id,
+      email: user.email,
+      name: user.name,
+    };
+  }
+
+  private async issueTokens(user: UserDocument, res: Response) {
+    const payload = this.userPayload(user);
+    const accessToken = await this.jwtService.signAsync(payload, {
+      secret:
+        this.configService.get<string>('JWT_ACCESS_SECRET') ??
+        'local-access-secret-change-me',
+      expiresIn: (this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') ??
+        '15m') as never,
+    });
+
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      secret:
+        this.configService.get<string>('JWT_REFRESH_SECRET') ??
+        'local-refresh-secret-change-me',
+      expiresIn: (this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') ??
+        '30d') as never,
+    });
+
+    res.cookie(
+      authCookieNames.accessToken,
+      accessToken,
+      this.getCookieOptions(15 * 60 * 1000),
+    );
+    res.cookie(
+      authCookieNames.refreshToken,
+      refreshToken,
+      this.getCookieOptions(30 * 24 * 60 * 60 * 1000),
     );
 
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: jwtConstants.secret,
-      expiresIn: '30d',
-    });
-
-    res.cookie('teamBoard-access-token', accessToken, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-    res.cookie('teamBoard-refresh-token', refreshToken, {
-      httpOnly: true,
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-    });
-
-    return { user };
+    return { user, accessToken };
   }
 
   async validateUser(loginDto: LoginDto) {
     const user = await this.usersService.getUser(loginDto.email);
 
-    if (user && bcrypt.compare(loginDto.password, user.passwordHash)) {
+    if (user && (await bcrypt.compare(loginDto.password, user.passwordHash))) {
       return user;
     }
     return null;
@@ -63,7 +87,7 @@ export class AuthService {
       throw new BadRequestException('Email already in use');
     }
 
-    const hatchedPassword = await bcrypt.hash(registerDto.password, 10);
+    const hatchedPassword = await bcrypt.hash(registerDto.password, 12);
     const user = await this.usersService.createUser({
       ...registerDto,
       password: hatchedPassword,
@@ -81,20 +105,24 @@ export class AuthService {
       });
     }
 
+    await this.usersService.markLastLogin(user.id);
+
     return this.issueTokens(user, res);
   }
 
   async refreshToken(req: Request, res: Response) {
-    const refreshToken = req.cookies['refresh-token'];
+    const refreshToken = req.cookies?.[authCookieNames.refreshToken];
     if (!refreshToken) {
       throw new UnauthorizedException('refresh token not found');
     }
-    let payload;
+    let payload: { sub: string; email: string };
     try {
-      payload = this.jwtService.verify(refreshToken, {
-        secret: jwtConstants.secret,
+      payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret:
+          this.configService.get<string>('JWT_REFRESH_SECRET') ??
+          'local-refresh-secret-change-me',
       });
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('invalid or expired refresh token');
     }
 
@@ -104,28 +132,29 @@ export class AuthService {
       throw new BadRequestException('user not found');
     }
 
-    const expiresIn = 15000;
-    const expiration = Math.floor(Date.now() / 1000) + expiresIn;
-    const accessToken = this.jwtService.sign(
+    const accessToken = await this.jwtService.signAsync(
+      this.userPayload(userExists),
       {
-        ...payload,
-        exp: expiration,
-      },
-      {
-        secret: jwtConstants.secret,
+        secret:
+          this.configService.get<string>('JWT_ACCESS_SECRET') ??
+          'local-access-secret-change-me',
+        expiresIn: (this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') ??
+          '15m') as never,
       },
     );
 
-    res.cookie('thex-access-token', accessToken, {
-      httpOnly: true,
-    });
+    res.cookie(
+      authCookieNames.accessToken,
+      accessToken,
+      this.getCookieOptions(15 * 60 * 1000),
+    );
 
     return accessToken;
   }
 
   async logout(res: Response) {
-    res.clearCookie('teamBoard-access-token');
-    res.clearCookie('refresh-token');
+    res.clearCookie(authCookieNames.accessToken);
+    res.clearCookie(authCookieNames.refreshToken);
     return { message: 'Logged out' };
   }
 }

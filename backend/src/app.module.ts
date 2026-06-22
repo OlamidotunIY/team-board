@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { GqlConfig } from './config/graphql-ws';
 import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
+import { ProjectModule } from './project/project.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { UserModule } from './user/user.module';
     GqlConfig,
     DatabaseModule,
     UserModule,
+    ProjectModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],

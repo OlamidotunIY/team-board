@@ -5,8 +5,15 @@ describe('UserService', () => {
   let service: UserService;
 
   beforeEach(async () => {
+    const userModel = {
+      findOne: jest.fn(),
+      findById: jest.fn(),
+      create: jest.fn(),
+      findByIdAndUpdate: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService],
+      providers: [UserService, { provide: 'USER_MODEL', useValue: userModel }],
     }).compile();
 
     service = module.get<UserService>(UserService);

@@ -1,20 +1,34 @@
-
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { jwtConstants } from '../constants';
+import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
+import { authCookieNames } from '../constants';
+
+const cookieExtractor = (request?: Request): string | null => {
+  if (!request?.cookies) {
+    return null;
+  }
+
+  return request.cookies[authCookieNames.accessToken] ?? null;
+};
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(configService: ConfigService) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        cookieExtractor,
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
-      secretOrKey: jwtConstants.secret,
+      secretOrKey:
+        configService.get<string>('JWT_ACCESS_SECRET') ??
+        'local-access-secret-change-me',
     });
   }
 
-  async validate(payload: any) {
-    return { userId: payload.sub, username: payload.username };
+  validate(payload: { sub: string; email: string; name: string }) {
+    return { id: payload.sub, email: payload.email, name: payload.name };
   }
 }

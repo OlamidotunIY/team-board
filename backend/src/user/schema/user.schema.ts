@@ -3,13 +3,13 @@ import { HydratedDocument } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class User {
-  @Prop({ unique: true })
+  @Prop({ required: true, unique: true, lowercase: true, trim: true })
   email!: string;
 
-  @Prop()
+  @Prop({ required: true, select: false })
   passwordHash!: string;
 
-  @Prop()
+  @Prop({ required: true, trim: true })
   name!: string;
 
   @Prop({ default: false })
@@ -22,5 +22,8 @@ export class User {
   lastLoginAt!: Date;
 }
 
-export type UserDocument = HydratedDocument<User>
+export type UserDocument = HydratedDocument<User>;
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.set('toJSON', { virtuals: true });
+UserSchema.set('toObject', { virtuals: true });

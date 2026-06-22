@@ -9,7 +9,12 @@ services:
     environment:
       NODE_ENV: development
       PORT: 3000
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-local-access-secret-change-me}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-local-refresh-secret-change-me}
+      JWT_ACCESS_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN:-15m}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-30d}
       MONGODB_URI: mongodb://mongodb:27017/${MONGO_DATABASE:-teamboard}
+      REDIS_HOST: redis
       REDIS_URL: redis://redis:6379
     volumes:
       - .:/app
