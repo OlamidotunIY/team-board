@@ -10,7 +10,7 @@ import { ScreenLoader } from "@/components/custom/ScreenLoader";
 const RequireAuth = () =>
 {
     const location = useLocation();
-    const { setUser, user } = useUserStore();
+    const { setUser } = useUserStore();
 
     const { data, loading } = useQuery<MeQuery, MeQueryVariables>(
         GET_USER,
@@ -29,7 +29,7 @@ const RequireAuth = () =>
         return <ScreenLoader />;
     }
 
-    return user?.id ? (
+    return data?.currentUser ? (
         <Outlet />
     ) : (
         <Navigate to="/auth/login" state={{ from: location }} replace />

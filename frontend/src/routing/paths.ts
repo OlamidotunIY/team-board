@@ -6,11 +6,10 @@ export const PATHS = {
     signup: "/auth/signup",
   },
   projects: {
-    root: "/projects",
-    detail: (projectId: string) => `/projects/${projectId}`,
+    detail: (projectId: string) => `/p/${projectId}`,
     tasks: {
       root: "/tasks",
-      detail: (taskId: string) => `/tasks/${taskId}`,
+      detail: (taskId: string) => `/t/${taskId}`,
     },
   },
 

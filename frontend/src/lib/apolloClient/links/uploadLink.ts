@@ -11,7 +11,7 @@ export const uploadLink = new UploadHttpLink({
   credentials: "include",
   headers: {
     "apollo-require-preflight": "true",
-    "x-oyana-client-platform": "web",
-    "x-oyana-client-version": import.meta.env.NEXT_PUBLIC_APP_VERSION ?? "web-unknown",
+    "x-teamBoard-client-platform": "web",
+    "x-teamBoard-client-version": import.meta.env.NEXT_PUBLIC_APP_VERSION ?? "web-unknown",
   }
 });

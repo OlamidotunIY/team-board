@@ -5,15 +5,13 @@ import cookieParser from 'cookie-parser';
 import { Transport } from '@nestjs/microservices';
 import { RABBITMQ_QUEUE } from './common/messaging/rabbitmq-client.provider';
 
-  const allowedOrigins = [
-    'http://localhost:3100',
-    'http://localhost:5173',
-  ];
+const allowedOrigins = ['http://localhost:3100', 'http://localhost:5173'];
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: allowedOrigins,
+    // Allow all origins by reflecting request origin (keeps credentials support)
+    origin: true,
     credentials: true,
 
     allowedHeaders: [
@@ -22,6 +20,8 @@ async function bootstrap() {
       'Content-Type',
       'X-Requested-With',
       'apollo-require-preflight',
+      'x-teamBoard-client-platform',
+      'x-teamBoard-client-version',
     ],
 
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
