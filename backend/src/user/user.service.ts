@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { UserDocument } from './schema/user.schema';
 import { RegisterDto } from '../auth/dto/register.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -25,6 +26,10 @@ export class UserService {
       passwordHash: dto.password,
       isEmailVerified: false,
     });
+  }
+
+  async updateUser(id: string, dto: UpdateUserDto) {
+    return this.user.findByIdAndUpdate(id, { $set: dto }, { new: true });
   }
 
   async markLastLogin(id: string) {

@@ -1,0 +1,5 @@
+first of all if we no longer need local guard and strategy please remove it. change this "local-access-secret-change-me" to an actual local fallback using the constant file, generate the keys and put there. Auth User sould be defined once and used everywhere not defined multiiple times.
+
+you're suppose to implement a real service to service communication, i need you to fully setup projects aand tasks, add more fields to them both, create seeds for testing. setup testing using jest.
+
+setup updating user data also, 

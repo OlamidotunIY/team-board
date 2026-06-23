@@ -1,0 +1,211 @@
+{
+  "info": {
+    "name": "TeamBoard Backend",
+    "_postman_id": "4a946d56-2a83-4b8c-8f52-teamboard",
+    "description": "GraphQL collection for TeamBoard auth, users, projects, and tasks.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/graphql" },
+    { "key": "accessToken", "value": "" },
+    { "key": "projectId", "value": "" },
+    { "key": "taskId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation Register($input: RegisterDto!) { register(registerInput: $input) { accessToken user { id email name role } } }\",\"variables\":{\"input\":{\"name\":\"Test User\",\"email\":\"test@teamboard.local\",\"password\":\"Password123!\"}}}"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+      }
+    },
+    {
+      "name": "Auth - Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.data?.login?.accessToken) pm.collectionVariables.set('accessToken', json.data.login.accessToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation Login($input: LoginDto!) { login(loginInput: $input) { accessToken user { id email name role } } }\",\"variables\":{\"input\":{\"email\":\"ada@teamboard.local\",\"password\":\"Password123!\"}}}"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+      }
+    },
+    {
+      "name": "Auth - Me",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"query Me { me { id email name role } currentUser { id email name role jobTitle timezone } }\"}"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+      }
+    },
+    {
+      "name": "User - Update Current User",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation UpdateCurrentUser($input: UpdateUserDto!) { updateCurrentUser(userInput: $input) { id name bio jobTitle timezone } }\",\"variables\":{\"input\":{\"bio\":\"Building TeamBoard\",\"jobTitle\":\"Backend Engineer\",\"timezone\":\"Africa/Lagos\"}}}"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+      }
+    },
+    {
+      "name": "Project - Create",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.data?.createProject?.id) pm.collectionVariables.set('projectId', json.data.createProject.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation CreateProject($input: CreateProjectDto!) { createProject(projectInput: $input) { id name status visibility color tags progress } }\",\"variables\":{\"input\":{\"name\":\"Postman Project\",\"description\":\"Created from Postman\",\"status\":\"ACTIVE\",\"visibility\":\"TEAM\",\"color\":\"#2563eb\",\"tags\":[\"api\",\"postman\"]}}}"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+      }
+    },
+    {
+      "name": "Project - List",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"query Projects { projects { id name description status visibility tags progress dueDate } }\"}"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+      }
+    },
+    {
+      "name": "Project - Update",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation UpdateProject($input: UpdateProjectDto!) { updateProject(projectInput: $input) { id name status progress } }\",\"variables\":{\"input\":{\"id\":\"{{projectId}}\",\"status\":\"ON_HOLD\",\"progress\":55}}}"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+      }
+    },
+    {
+      "name": "Task - Create",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.data?.createTask?.id) pm.collectionVariables.set('taskId', json.data.createTask.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation CreateTask($input: CreateTaskDto!) { createTask(taskInput: $input) { id title status priority labels estimateMinutes order } }\",\"variables\":{\"input\":{\"projectId\":\"{{projectId}}\",\"title\":\"Postman task\",\"description\":\"Created from Postman\",\"status\":\"TODO\",\"priority\":\"HIGH\",\"labels\":[\"api\"],\"estimateMinutes\":90,\"order\":1}}}"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+      }
+    },
+    {
+      "name": "Task - List By Project",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"query Tasks($projectId: ID!) { tasks(projectId: $projectId) { id title status priority labels dueDate completedAt } }\",\"variables\":{\"projectId\":\"{{projectId}}\"}}"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+      }
+    },
+    {
+      "name": "Task - Update",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation UpdateTask($input: UpdateTaskDto!) { updateTask(taskInput: $input) { id title status completedAt } }\",\"variables\":{\"input\":{\"id\":\"{{taskId}}\",\"status\":\"DONE\",\"completedAt\":\"2026-06-23T12:00:00.000Z\"}}}"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+      }
+    },
+    {
+      "name": "Task - Delete",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation DeleteTask($id: ID!) { deleteTask(id: $id) }\",\"variables\":{\"id\":\"{{taskId}}\"}}"
+        },
+        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+      }
+    }
+  ]
+}

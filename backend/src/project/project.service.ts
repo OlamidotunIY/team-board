@@ -17,13 +17,15 @@ export class ProjectService {
   }
 
   findAllForUser(user: AuthUser) {
-    return this.projectModel.find({ ownerId: user.id }).sort({ createdAt: -1 });
+    return this.projectModel
+      .find({ $or: [{ ownerId: user.id }, { memberIds: user.id }] })
+      .sort({ createdAt: -1 });
   }
 
   async findOneForUser(id: string, user: AuthUser) {
     const project = await this.projectModel.findOne({
       _id: id,
-      ownerId: user.id,
+      $or: [{ ownerId: user.id }, { memberIds: user.id }],
     });
 
     if (!project) {

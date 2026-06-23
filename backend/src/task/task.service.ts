@@ -3,7 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Model } from 'mongoose';
 import { taskEvents } from '../common/events/task.events';
 import { AuthUser } from '../common/interfaces/auth-user.interface';
-import { REDIS_CLIENT } from '../common/messaging/redis-client.provider';
+import { RABBITMQ_CLIENT } from '../common/messaging/rabbitmq-client.provider';
 import { ProjectService } from '../project/project.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -15,8 +15,8 @@ export class TaskService {
     @Inject('TASK_MODEL')
     private readonly taskModel: Model<TaskDocument>,
     private readonly projectService: ProjectService,
-    @Inject(REDIS_CLIENT)
-    private readonly redisClient: ClientProxy,
+    @Inject(RABBITMQ_CLIENT)
+    private readonly eventClient: ClientProxy,
   ) {}
 
   async create(dto: CreateTaskDto, user: AuthUser) {
@@ -24,10 +24,11 @@ export class TaskService {
 
     const task = await this.taskModel.create({
       ...dto,
+      reporterId: dto.reporterId ?? user.id,
       createdById: user.id,
     });
 
-    this.redisClient.emit(taskEvents.created, {
+    this.eventClient.emit(taskEvents.created, {
       taskId: task.id,
       projectId: dto.projectId,
     });
@@ -64,14 +65,14 @@ export class TaskService {
       throw new NotFoundException('Task not found');
     }
 
-    this.redisClient.emit(taskEvents.updated, { taskId: task.id });
+    this.eventClient.emit(taskEvents.updated, { taskId: task.id });
     return task;
   }
 
   async remove(id: string, user: AuthUser) {
     await this.findOne(id, user);
     const result = await this.taskModel.deleteOne({ _id: id });
-    this.redisClient.emit(taskEvents.deleted, { taskId: id });
+    this.eventClient.emit(taskEvents.deleted, { taskId: id });
     return result.deletedCount === 1;
   }
 }

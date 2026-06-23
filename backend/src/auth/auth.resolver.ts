@@ -6,7 +6,7 @@ import { Request, Response } from 'express';
 import { LoginDto, LoginResponse } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/gql-jwt.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
-import type { AuthenticatedUser } from './decorators/current-user.decorator';
+import type { AuthUser } from '../common/interfaces/auth-user.interface';
 import { UserEntity } from '../user/entity/user.entity';
 
 @Resolver()
@@ -43,7 +43,7 @@ export class AuthResolver {
 
   @UseGuards(JwtAuthGuard)
   @Query(() => UserEntity)
-  me(@CurrentUser() user: AuthenticatedUser) {
+  me(@CurrentUser() user: AuthUser) {
     return user;
   }
 }

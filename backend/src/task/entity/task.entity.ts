@@ -28,10 +28,31 @@ export class TaskEntity {
   assigneeId?: string;
 
   @Field(() => ID)
+  reporterId!: string;
+
+  @Field(() => [ID])
+  watcherIds!: string[];
+
+  @Field(() => ID)
   createdById!: string;
+
+  @Field(() => ID, { nullable: true })
+  parentTaskId?: string;
+
+  @Field(() => [String])
+  labels!: string[];
+
+  @Field({ nullable: true })
+  estimateMinutes?: number;
+
+  @Field()
+  order!: number;
 
   @Field({ nullable: true })
   dueDate?: Date;
+
+  @Field({ nullable: true })
+  completedAt?: Date;
 
   @Field({ nullable: true })
   createdAt?: Date;

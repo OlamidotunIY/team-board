@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { Transport } from '@nestjs/microservices';
+import { RABBITMQ_QUEUE } from './common/messaging/rabbitmq-client.provider';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,10 +23,15 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.connectMicroservice({
-    transport: Transport.REDIS,
+    transport: Transport.RMQ,
     options: {
-      host: process.env.REDIS_HOST ?? 'localhost',
-      port: Number(process.env.REDIS_PORT ?? 6379),
+      urls: [
+        process.env.RABBITMQ_URL ?? 'amqp://teamboard:teamboard@localhost:5672',
+      ],
+      queue: process.env.RABBITMQ_QUEUE ?? RABBITMQ_QUEUE,
+      queueOptions: {
+        durable: true,
+      },
     },
   });
   app.useGlobalPipes(

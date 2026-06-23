@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserModule } from '../user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { localJwtFallbacks } from './constants';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: (configService: ConfigService) => ({
         secret:
           configService.get<string>('JWT_ACCESS_SECRET') ??
-          'local-access-secret-change-me',
+          localJwtFallbacks.accessSecret,
         signOptions: {
           expiresIn: (configService.get<string>('JWT_ACCESS_EXPIRES_IN') ??
             '15m') as never,

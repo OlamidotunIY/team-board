@@ -1,6 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  MEMBER = 'MEMBER',
+}
+
 @Schema({ timestamps: true })
 export class User {
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
@@ -11,6 +16,21 @@ export class User {
 
   @Prop({ required: true, trim: true })
   name!: string;
+
+  @Prop({ enum: UserRole, default: UserRole.MEMBER })
+  role!: UserRole;
+
+  @Prop({ trim: true })
+  avatarUrl?: string;
+
+  @Prop({ trim: true })
+  bio?: string;
+
+  @Prop({ trim: true })
+  jobTitle?: string;
+
+  @Prop({ trim: true, default: 'UTC' })
+  timezone!: string;
 
   @Prop({ default: false })
   isEmailVerified!: boolean;

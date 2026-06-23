@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { authCookieNames } from './constants';
+import { authCookieNames, localJwtFallbacks } from './constants';
 import { Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from '../user/entity/user.entity';
@@ -36,6 +36,7 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       name: user.name,
+      role: user.role,
     };
   }
 
@@ -44,7 +45,7 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(payload, {
       secret:
         this.configService.get<string>('JWT_ACCESS_SECRET') ??
-        'local-access-secret-change-me',
+        localJwtFallbacks.accessSecret,
       expiresIn: (this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') ??
         '15m') as never,
     });
@@ -52,7 +53,7 @@ export class AuthService {
     const refreshToken = await this.jwtService.signAsync(payload, {
       secret:
         this.configService.get<string>('JWT_REFRESH_SECRET') ??
-        'local-refresh-secret-change-me',
+        localJwtFallbacks.refreshSecret,
       expiresIn: (this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') ??
         '30d') as never,
     });
@@ -120,7 +121,7 @@ export class AuthService {
       payload = await this.jwtService.verifyAsync(refreshToken, {
         secret:
           this.configService.get<string>('JWT_REFRESH_SECRET') ??
-          'local-refresh-secret-change-me',
+          localJwtFallbacks.refreshSecret,
       });
     } catch {
       throw new UnauthorizedException('invalid or expired refresh token');
@@ -137,7 +138,7 @@ export class AuthService {
       {
         secret:
           this.configService.get<string>('JWT_ACCESS_SECRET') ??
-          'local-access-secret-change-me',
+          localJwtFallbacks.accessSecret,
         expiresIn: (this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') ??
           '15m') as never,
       },

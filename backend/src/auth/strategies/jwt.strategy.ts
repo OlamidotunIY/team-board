@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
-import { authCookieNames } from '../constants';
+import { authCookieNames, localJwtFallbacks } from '../constants';
 
 const cookieExtractor = (request?: Request): string | null => {
   if (!request?.cookies) {
@@ -24,11 +24,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ignoreExpiration: false,
       secretOrKey:
         configService.get<string>('JWT_ACCESS_SECRET') ??
-        'local-access-secret-change-me',
+        localJwtFallbacks.accessSecret,
     });
   }
 
-  validate(payload: { sub: string; email: string; name: string }) {
-    return { id: payload.sub, email: payload.email, name: payload.name };
+  validate(payload: { sub: string; email: string; name: string; role?: string }) {
+    return {
+      id: payload.sub,
+      email: payload.email,
+      name: payload.name,
+      role: payload.role,
+    };
   }
 }
