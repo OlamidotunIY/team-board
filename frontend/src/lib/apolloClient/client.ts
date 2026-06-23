@@ -4,11 +4,18 @@ import { getMainDefinition } from "@apollo/client/utilities"
 import { errorLink } from "./links/errorLink"
 import { authLink } from "./links/authLink"
 import { createLoadingLink } from "./links/loadingLink";
+import { uploadLink } from "./links/uploadLink"
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
+import { WS_URL } from "./env"
 
 
 
 loadErrorMessages()
 loadDevMessages()
+
+const wsClient = createClient({ url: WS_URL });
+const wsLink = new GraphQLWsLink(wsClient);
 
 /**
  * Split: subscriptions => WS, everything else => HTTP chain
@@ -21,7 +28,8 @@ export const link = split(
       definition.operation === "subscription"
     )
   },
-  ApolloLink.from([createLoadingLink(), errorLink, authLink])
+  wsLink,
+  ApolloLink.from([createLoadingLink(), errorLink, authLink, uploadLink])
 )
 
 /**

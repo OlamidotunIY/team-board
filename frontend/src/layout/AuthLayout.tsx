@@ -22,7 +22,7 @@ const AuthLayout = () =>
             </div>
             <div className="bg-muted relative hidden lg:block">
                 <img
-                    src={""}
+                    src={"/img.jpg"}
                     alt="Image"
                     className="absolute inset-0 h-full w-full object-cover object-top  "
                 />

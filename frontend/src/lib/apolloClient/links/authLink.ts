@@ -18,8 +18,8 @@ export const authLink = setContext(async (_, { headers }) => {
     headers: {
       ...headers,
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      "x-oyana-client-platform": "web",
-      "x-oyana-client-version": version,
+      "x-teamBoard-client-platform": "web",
+      "x-teamBoard-client-version": version,
     },
   }
 })
