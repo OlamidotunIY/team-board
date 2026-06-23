@@ -20,8 +20,9 @@ ENV NODE_ENV=production
 
 RUN npm install -g pnpm@10.33.0
 
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --prod --frozen-lockfile
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 COPY --from=build /app/dist ./dist
 

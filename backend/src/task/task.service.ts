@@ -8,6 +8,7 @@ import { ProjectService } from '../project/project.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskDocument } from './schema/task.schema';
+import { ObjectId } from "mongodb";
 
 @Injectable()
 export class TaskService {
@@ -38,7 +39,7 @@ export class TaskService {
 
   async findByProject(projectId: string, user: AuthUser) {
     await this.projectService.findOneForUser(projectId, user);
-    return this.taskModel.find({ projectId }).sort({ createdAt: -1 });
+    return this.taskModel.find({ projectId: new ObjectId(projectId) }).sort({ createdAt: -1 });
   }
 
   async findOne(id: string, user: AuthUser) {
