@@ -1,7 +1,6 @@
 {
   "info": {
     "name": "TeamBoard Backend",
-    "_postman_id": "4a946d56-2a83-4b8c-8f52-teamboard",
     "description": "GraphQL collection for TeamBoard auth, users, projects, and tasks.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -18,10 +17,13 @@
         "method": "POST",
         "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": {
-          "mode": "raw",
-          "raw": "{\"query\":\"mutation Register($input: RegisterDto!) { register(registerInput: $input) { accessToken user { id email name role } } }\",\"variables\":{\"input\":{\"name\":\"Test User\",\"email\":\"test@teamboard.local\",\"password\":\"Password123!\"}}}"
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation Register($input: RegisterDto!) {\n  register(registerInput: $input) {\n    accessToken\n    user {\n      id\n      email\n      name\n      role\n    }\n  }\n}",
+            "variables": "{\n  \"input\": {\n    \"name\": \"Test User\",\n    \"email\": \"test@teamboard.local\",\n    \"password\": \"Password123!\"\n  }\n}"
+          }
         },
-        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+        "url": "{{baseUrl}}"
       }
     },
     {
@@ -42,10 +44,13 @@
         "method": "POST",
         "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": {
-          "mode": "raw",
-          "raw": "{\"query\":\"mutation Login($input: LoginDto!) { login(loginInput: $input) { accessToken user { id email name role } } }\",\"variables\":{\"input\":{\"email\":\"ada@teamboard.local\",\"password\":\"Password123!\"}}}"
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation Login($input: LoginDto!) {\n  login(loginInput: $input) {\n    accessToken\n    user {\n      id\n      email\n      name\n      role\n    }\n  }\n}",
+            "variables": "{\n  \"input\": {\n    \"email\": \"ada@teamboard.local\",\n    \"password\": \"Password123!\"\n  }\n}"
+          }
         },
-        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+        "url": "{{baseUrl}}"
       }
     },
     {
@@ -57,10 +62,13 @@
           { "key": "Authorization", "value": "Bearer {{accessToken}}" }
         ],
         "body": {
-          "mode": "raw",
-          "raw": "{\"query\":\"query Me { me { id email name role } currentUser { id email name role jobTitle timezone } }\"}"
+          "mode": "graphql",
+          "graphql": {
+            "query": "query Me {\n  me {\n    id\n    email\n    name\n    role\n  }\n  currentUser {\n    id\n    email\n    name\n    role\n    jobTitle\n    timezone\n  }\n}",
+            "variables": "{}"
+          }
         },
-        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+        "url": "{{baseUrl}}"
       }
     },
     {
@@ -72,10 +80,13 @@
           { "key": "Authorization", "value": "Bearer {{accessToken}}" }
         ],
         "body": {
-          "mode": "raw",
-          "raw": "{\"query\":\"mutation UpdateCurrentUser($input: UpdateUserDto!) { updateCurrentUser(userInput: $input) { id name bio jobTitle timezone } }\",\"variables\":{\"input\":{\"bio\":\"Building TeamBoard\",\"jobTitle\":\"Backend Engineer\",\"timezone\":\"Africa/Lagos\"}}}"
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation UpdateCurrentUser($input: UpdateUserDto!) {\n  updateCurrentUser(userInput: $input) {\n    id\n    name\n    bio\n    jobTitle\n    timezone\n  }\n}",
+            "variables": "{\n  \"input\": {\n    \"bio\": \"Building TeamBoard\",\n    \"jobTitle\": \"Backend Engineer\",\n    \"timezone\": \"Africa/Lagos\"\n  }\n}"
+          }
         },
-        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+        "url": "{{baseUrl}}"
       }
     },
     {
@@ -99,14 +110,30 @@
           { "key": "Authorization", "value": "Bearer {{accessToken}}" }
         ],
         "body": {
-          "mode": "raw",
-          "raw": "{\"query\":\"mutation CreateProject($input: CreateProjectDto!) { createProject(projectInput: $input) { id name status visibility color tags progress } }\",\"variables\":{\"input\":{\"name\":\"Postman Project\",\"description\":\"Created from Postman\",\"status\":\"ACTIVE\",\"visibility\":\"TEAM\",\"color\":\"#2563eb\",\"tags\":[\"api\",\"postman\"]}}}"
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation CreateProject($input: CreateProjectDto!) {\n  createProject(projectInput: $input) {\n    id\n    name\n    status\n    visibility\n    color\n    tags\n    progress\n  }\n}",
+            "variables": "{\n  \"input\": {\n    \"name\": \"Postman Project\",\n    \"description\": \"Created from Postman\",\n    \"status\": \"ACTIVE\",\n    \"visibility\": \"TEAM\",\n    \"color\": \"#2563eb\",\n    \"tags\": [\"api\", \"postman\"]\n  }\n}"
+          }
         },
-        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+        "url": "{{baseUrl}}"
       }
     },
     {
       "name": "Project - List",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "const firstProject = json.data?.projects?.[0];",
+              "if (firstProject?.id) pm.collectionVariables.set('projectId', firstProject.id);"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [
@@ -114,10 +141,13 @@
           { "key": "Authorization", "value": "Bearer {{accessToken}}" }
         ],
         "body": {
-          "mode": "raw",
-          "raw": "{\"query\":\"query Projects { projects { id name description status visibility tags progress dueDate } }\"}"
+          "mode": "graphql",
+          "graphql": {
+            "query": "query Projects {\n  projects {\n    id\n    name\n    description\n    status\n    visibility\n    tags\n    progress\n    dueDate\n  }\n}",
+            "variables": "{}"
+          }
         },
-        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+        "url": "{{baseUrl}}"
       }
     },
     {
@@ -129,10 +159,13 @@
           { "key": "Authorization", "value": "Bearer {{accessToken}}" }
         ],
         "body": {
-          "mode": "raw",
-          "raw": "{\"query\":\"mutation UpdateProject($input: UpdateProjectDto!) { updateProject(projectInput: $input) { id name status progress } }\",\"variables\":{\"input\":{\"id\":\"{{projectId}}\",\"status\":\"ON_HOLD\",\"progress\":55}}}"
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation UpdateProject($input: UpdateProjectDto!) {\n  updateProject(projectInput: $input) {\n    id\n    name\n    status\n    progress\n  }\n}",
+            "variables": "{\n  \"input\": {\n    \"id\": \"{{projectId}}\",\n    \"status\": \"ON_HOLD\",\n    \"progress\": 55\n  }\n}"
+          }
         },
-        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+        "url": "{{baseUrl}}"
       }
     },
     {
@@ -156,14 +189,30 @@
           { "key": "Authorization", "value": "Bearer {{accessToken}}" }
         ],
         "body": {
-          "mode": "raw",
-          "raw": "{\"query\":\"mutation CreateTask($input: CreateTaskDto!) { createTask(taskInput: $input) { id title status priority labels estimateMinutes order } }\",\"variables\":{\"input\":{\"projectId\":\"{{projectId}}\",\"title\":\"Postman task\",\"description\":\"Created from Postman\",\"status\":\"TODO\",\"priority\":\"HIGH\",\"labels\":[\"api\"],\"estimateMinutes\":90,\"order\":1}}}"
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation CreateTask($input: CreateTaskDto!) {\n  createTask(taskInput: $input) {\n    id\n    title\n    status\n    priority\n    labels\n    estimateMinutes\n    order\n  }\n}",
+            "variables": "{\n  \"input\": {\n    \"projectId\": \"{{projectId}}\",\n    \"title\": \"Postman task\",\n    \"description\": \"Created from Postman\",\n    \"status\": \"TODO\",\n    \"priority\": \"HIGH\",\n    \"labels\": [\"api\"],\n    \"estimateMinutes\": 90,\n    \"order\": 1\n  }\n}"
+          }
         },
-        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+        "url": "{{baseUrl}}"
       }
     },
     {
       "name": "Task - List By Project",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "const firstTask = json.data?.tasks?.[0];",
+              "if (firstTask?.id) pm.collectionVariables.set('taskId', firstTask.id);"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [
@@ -171,10 +220,13 @@
           { "key": "Authorization", "value": "Bearer {{accessToken}}" }
         ],
         "body": {
-          "mode": "raw",
-          "raw": "{\"query\":\"query Tasks($projectId: ID!) { tasks(projectId: $projectId) { id title status priority labels dueDate completedAt } }\",\"variables\":{\"projectId\":\"{{projectId}}\"}}"
+          "mode": "graphql",
+          "graphql": {
+            "query": "query Tasks($projectId: ID!) {\n  tasks(projectId: $projectId) {\n    id\n    title\n    status\n    priority\n    labels\n    dueDate\n    completedAt\n  }\n}",
+            "variables": "{\n  \"projectId\": \"{{projectId}}\"\n}"
+          }
         },
-        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+        "url": "{{baseUrl}}"
       }
     },
     {
@@ -186,10 +238,13 @@
           { "key": "Authorization", "value": "Bearer {{accessToken}}" }
         ],
         "body": {
-          "mode": "raw",
-          "raw": "{\"query\":\"mutation UpdateTask($input: UpdateTaskDto!) { updateTask(taskInput: $input) { id title status completedAt } }\",\"variables\":{\"input\":{\"id\":\"{{taskId}}\",\"status\":\"DONE\",\"completedAt\":\"2026-06-23T12:00:00.000Z\"}}}"
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation UpdateTask($input: UpdateTaskDto!) {\n  updateTask(taskInput: $input) {\n    id\n    title\n    status\n    completedAt\n  }\n}",
+            "variables": "{\n  \"input\": {\n    \"id\": \"{{taskId}}\",\n    \"status\": \"DONE\",\n    \"completedAt\": \"2026-06-23T12:00:00.000Z\"\n  }\n}"
+          }
         },
-        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+        "url": "{{baseUrl}}"
       }
     },
     {
@@ -201,10 +256,13 @@
           { "key": "Authorization", "value": "Bearer {{accessToken}}" }
         ],
         "body": {
-          "mode": "raw",
-          "raw": "{\"query\":\"mutation DeleteTask($id: ID!) { deleteTask(id: $id) }\",\"variables\":{\"id\":\"{{taskId}}\"}}"
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation DeleteTask($id: ID!) {\n  deleteTask(id: $id)\n}",
+            "variables": "{\n  \"id\": \"{{taskId}}\"\n}"
+          }
         },
-        "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] }
+        "url": "{{baseUrl}}"
       }
     }
   ]
