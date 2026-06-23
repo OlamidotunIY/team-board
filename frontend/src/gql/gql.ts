@@ -16,11 +16,17 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 type Documents = {
     "\n  mutation Login($input: LoginDto!) {\n    login(loginInput: $input) {\n      accessToken\n      user {\n        id\n        email\n        name\n        role\n        jobTitle\n        timezone\n      }\n    }\n  }\n": typeof types.LoginDocument,
     "\n  mutation Register($input: RegisterDto!) {\n    register(registerInput: $input) {\n      accessToken\n      user {\n        id\n        email\n        name\n        role\n        jobTitle\n        timezone\n      }\n    }\n  }\n": typeof types.RegisterDocument,
+    "\n  mutation CreateProject($input: CreateProjectDto!) {\n    createProject(projectInput: $input) {\n      id\n      name\n      status\n      visibility\n      color\n      tags\n      progress\n    }\n  }\n": typeof types.CreateProjectDocument,
+    "\n  query Projects {\n    projects {\n      id\n      name\n      description\n      status\n      visibility\n      tags\n      progress\n      dueDate\n    }\n  }\n": typeof types.ProjectsDocument,
+    "\n  query Tasks($projectId: ID!) {\n    tasks(projectId: $projectId) {\n      id\n      title\n      status\n      priority\n      labels\n      dueDate\n      completedAt\n    }\n  }\n": typeof types.TasksDocument,
     "\n  query Me {\n    currentUser {\n      id\n      email\n      name\n      role\n      jobTitle\n      timezone\n    }\n  }\n": typeof types.MeDocument,
 };
 const documents: Documents = {
     "\n  mutation Login($input: LoginDto!) {\n    login(loginInput: $input) {\n      accessToken\n      user {\n        id\n        email\n        name\n        role\n        jobTitle\n        timezone\n      }\n    }\n  }\n": types.LoginDocument,
     "\n  mutation Register($input: RegisterDto!) {\n    register(registerInput: $input) {\n      accessToken\n      user {\n        id\n        email\n        name\n        role\n        jobTitle\n        timezone\n      }\n    }\n  }\n": types.RegisterDocument,
+    "\n  mutation CreateProject($input: CreateProjectDto!) {\n    createProject(projectInput: $input) {\n      id\n      name\n      status\n      visibility\n      color\n      tags\n      progress\n    }\n  }\n": types.CreateProjectDocument,
+    "\n  query Projects {\n    projects {\n      id\n      name\n      description\n      status\n      visibility\n      tags\n      progress\n      dueDate\n    }\n  }\n": types.ProjectsDocument,
+    "\n  query Tasks($projectId: ID!) {\n    tasks(projectId: $projectId) {\n      id\n      title\n      status\n      priority\n      labels\n      dueDate\n      completedAt\n    }\n  }\n": types.TasksDocument,
     "\n  query Me {\n    currentUser {\n      id\n      email\n      name\n      role\n      jobTitle\n      timezone\n    }\n  }\n": types.MeDocument,
 };
 
@@ -46,6 +52,18 @@ export function graphql(source: "\n  mutation Login($input: LoginDto!) {\n    lo
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation Register($input: RegisterDto!) {\n    register(registerInput: $input) {\n      accessToken\n      user {\n        id\n        email\n        name\n        role\n        jobTitle\n        timezone\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Register($input: RegisterDto!) {\n    register(registerInput: $input) {\n      accessToken\n      user {\n        id\n        email\n        name\n        role\n        jobTitle\n        timezone\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateProject($input: CreateProjectDto!) {\n    createProject(projectInput: $input) {\n      id\n      name\n      status\n      visibility\n      color\n      tags\n      progress\n    }\n  }\n"): (typeof documents)["\n  mutation CreateProject($input: CreateProjectDto!) {\n    createProject(projectInput: $input) {\n      id\n      name\n      status\n      visibility\n      color\n      tags\n      progress\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Projects {\n    projects {\n      id\n      name\n      description\n      status\n      visibility\n      tags\n      progress\n      dueDate\n    }\n  }\n"): (typeof documents)["\n  query Projects {\n    projects {\n      id\n      name\n      description\n      status\n      visibility\n      tags\n      progress\n      dueDate\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Tasks($projectId: ID!) {\n    tasks(projectId: $projectId) {\n      id\n      title\n      status\n      priority\n      labels\n      dueDate\n      completedAt\n    }\n  }\n"): (typeof documents)["\n  query Tasks($projectId: ID!) {\n    tasks(projectId: $projectId) {\n      id\n      title\n      status\n      priority\n      labels\n      dueDate\n      completedAt\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

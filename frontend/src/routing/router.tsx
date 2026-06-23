@@ -5,7 +5,7 @@ import AuthLayout from "@/layout/AuthLayout"
 import LoginPage from "@/features/auth/pages/LoginPage"
 import RegisterPage from "@/features/auth/pages/RegisterPage"
 import RootLayout from "@/layout/main/RootLayout"
-import ProjectPage from "@/features/projects/ProjectsPage"
+import ProjectPage from "@/features/projects/ProjectPage"
 import ProjectsPage from "@/features/projects/ProjectsPage"
 
 export const router = createBrowserRouter([
@@ -34,21 +34,18 @@ export const router = createBrowserRouter([
             path: "/",
             element: <RootLayout />,
             children: [
+
               {
-                path: PATHS.root,
+                index: true,
                 element: <ProjectsPage />,
               },
+
               {
-                path: "/p/:projectId",
+                path: "p/:projectId",
                 element: <ProjectPage />,
-                children: [
-                  {
-                    path: "/p/:projectId/t/:taskId",
-                    element: <ProjectPage />,
-                  }
-                ]
-              }
-            ]
+              },
+
+            ],
           },
         ],
       },

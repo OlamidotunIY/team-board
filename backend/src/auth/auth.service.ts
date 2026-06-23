@@ -47,7 +47,7 @@ export class AuthService {
         this.configService.get<string>('JWT_ACCESS_SECRET') ??
         localJwtFallbacks.accessSecret,
       expiresIn: (this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') ??
-        '15m') as never,
+        '7d') as never,
     });
 
     const refreshToken = await this.jwtService.signAsync(payload, {
@@ -61,7 +61,7 @@ export class AuthService {
     res.cookie(
       authCookieNames.accessToken,
       accessToken,
-      this.getCookieOptions(15 * 60 * 1000),
+      this.getCookieOptions(7 * 24 * 60 * 60 * 1000),
     );
     res.cookie(
       authCookieNames.refreshToken,

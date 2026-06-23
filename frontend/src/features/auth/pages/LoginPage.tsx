@@ -19,6 +19,7 @@ import { useMutation } from "@apollo/client/react";
 import { LOGIN_MUTATION } from "@/graphql/auth/login.mutation";
 import type { LoginMutation, LoginMutationVariables } from "@/gql/graphql";
 import { Eye, EyeOff, Lock, User2 } from "lucide-react";
+import { PATHS } from "@/routing/paths";
 
 
 function LoginPage()
@@ -66,7 +67,7 @@ function LoginPage()
               description="Welcome back! Redirecting to dashboard..."
             />
           );
-          navigate("/dashboard");
+          navigate(PATHS.root);
         }
       })
 

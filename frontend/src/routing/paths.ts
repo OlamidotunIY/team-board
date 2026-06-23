@@ -7,10 +7,6 @@ export const PATHS = {
   },
   projects: {
     detail: (projectId: string) => `/p/${projectId}`,
-    tasks: {
-      root: "/tasks",
-      detail: (taskId: string) => `/t/${taskId}`,
-    },
   },
 
   error: {
