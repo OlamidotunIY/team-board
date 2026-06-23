@@ -1,16 +1,8 @@
-import { Navigate, Route, Routes } from "react-router";
-import LoginPage from "./pages/LoginPage";
-import SignUpPage from "./pages/RegisterPage";
-import AuthLayout from "@/layout/AuthLayout";
+import { Navigate } from "react-router-dom";
+import { PATHS } from "@/routing/paths";
 
 const AuthPage = () => (
-    <Routes>
-        <Route element={<AuthLayout />}>
-            <Route path="auth/login" element={<LoginPage />} />
-            <Route path="auth/signup" element={<SignUpPage />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/error/404" />} />
-    </Routes>
+    <Navigate to={PATHS.auth.login} replace />
 );
 
 export { AuthPage };

@@ -1,12 +1,11 @@
-import { ScreenLoader } from "@/components";
-import type { MeQuery, MeQueryVariables, User } from "@/gql/graphql";
-import { extractGraphQLErrors } from "@/utils";
+import type { MeQuery, MeQueryVariables } from "@/gql/graphql";
 import { useQuery } from "@apollo/client/react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { toast } from "sonner";
 import { useEffect } from "react";
 import { useUserStore } from "@/store/UserStore";
 import { GET_USER } from "@/graphql";
+import type { UserEntity } from "@/gql/schema-types";
+import { ScreenLoader } from "@/components/custom/ScreenLoader";
 
 const RequireAuth = () =>
 {
@@ -15,30 +14,22 @@ const RequireAuth = () =>
 
     const { data, loading } = useQuery<MeQuery, MeQueryVariables>(
         GET_USER,
-        {
-            onError: (error) =>
-            {
-                const errors = extractGraphQLErrors(error);
-                console.log(errors);
-                toast.error(errors[0]?.message);
-            },
-        }
     );
 
     useEffect(() =>
     {
-        if (!loading && data?.user)
+        if (!loading && data?.currentUser)
         {
-            setUser(data.user as User);
+            setUser(data.currentUser as UserEntity);
         }
-    }, [loading, data?.user, setUser]);
+    }, [loading, data?.currentUser, setUser]);
 
     if (loading)
     {
         return <ScreenLoader />;
     }
 
-    return user.id ? (
+    return user?.id ? (
         <Outlet />
     ) : (
         <Navigate to="/auth/login" state={{ from: location }} replace />

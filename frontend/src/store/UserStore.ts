@@ -1,8 +1,9 @@
+import type { UserEntity } from "@/gql/schema-types"
 import { create } from "zustand"
 
 interface UserState {
-  user: User | null
-  setUser: (user: User) => void
+  user: UserEntity | null
+  setUser: (user: UserEntity) => void
 }
 
 export const useUserStore = create<UserState>()((set) => ({
