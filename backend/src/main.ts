@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import { Transport } from '@nestjs/microservices';
 import { RABBITMQ_QUEUE } from './common/messaging/rabbitmq-client.provider';
 

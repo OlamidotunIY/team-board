@@ -4,6 +4,7 @@ services:
       context: .
       target: dependencies
     command: pnpm start:dev
+    user: '1000:1000'
     ports:
       - '${PORT:-3000}:3000'
     environment:

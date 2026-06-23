@@ -2,7 +2,7 @@ FROM node:22-alpine AS base
 
 WORKDIR /app
 
-RUN corepack enable
+RUN npm install -g pnpm@10.33.0
 
 COPY package.json pnpm-lock.yaml ./
 
@@ -18,7 +18,7 @@ FROM node:22-alpine AS production
 WORKDIR /app
 ENV NODE_ENV=production
 
-RUN corepack enable
+RUN npm install -g pnpm@10.33.0
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --prod --frozen-lockfile
