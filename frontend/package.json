@@ -10,7 +10,7 @@
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
-    "graphql": "npx graphql-codegen"
+    "graphql": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
     "@apollo/client": "^4.2.3",
@@ -22,7 +22,7 @@
     "apollo-upload-client": "^19.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "graphql": "16.12.0",
+    "graphql": "16.14.2",
     "lucide-react": "^1.21.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
