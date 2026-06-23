@@ -1,0 +1,204 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateProjectDto {
+  color: String
+  description: String
+  dueDate: String
+  memberIds: [String!]
+  name: String!
+  startDate: String
+  status: ProjectStatus
+  tags: [String!]
+  visibility: ProjectVisibility
+}
+
+input CreateTaskDto {
+  assigneeId: ID
+  description: String
+  dueDate: String
+  estimateMinutes: Float
+  labels: [String!]
+  order: Float
+  parentTaskId: ID
+  priority: TaskPriority
+  projectId: ID!
+  reporterId: ID
+  status: TaskStatus
+  title: String!
+  watcherIds: [String!]
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input LoginDto {
+  email: String!
+  password: String!
+}
+
+type LoginResponse {
+  accessToken: String!
+  user: UserEntity
+}
+
+type Mutation {
+  createProject(projectInput: CreateProjectDto!): ProjectEntity!
+  createTask(taskInput: CreateTaskDto!): TaskEntity!
+  deleteProject(id: ID!): Boolean!
+  deleteTask(id: ID!): Boolean!
+  login(loginInput: LoginDto!): LoginResponse!
+  logout: String!
+  refreshToken: String!
+  register(registerInput: RegisterDto!): RegisterResponse!
+  updateCurrentUser(userInput: UpdateUserDto!): UserEntity
+  updateProject(projectInput: UpdateProjectDto!): ProjectEntity!
+  updateTask(taskInput: UpdateTaskDto!): TaskEntity!
+}
+
+type ProjectEntity {
+  color: String!
+  createdAt: DateTime
+  description: String
+  dueDate: DateTime
+  id: ID!
+  memberIds: [ID!]!
+  name: String!
+  ownerId: ID!
+  progress: Float!
+  startDate: DateTime
+  status: ProjectStatus!
+  tags: [String!]!
+  updatedAt: DateTime
+  visibility: ProjectVisibility!
+}
+
+enum ProjectStatus {
+  ACTIVE
+  ARCHIVED
+  COMPLETED
+  ON_HOLD
+  PLANNING
+}
+
+enum ProjectVisibility {
+  PRIVATE
+  TEAM
+}
+
+type Query {
+  currentUser: UserEntity!
+  me: UserEntity!
+  project(id: ID!): ProjectEntity!
+  projects: [ProjectEntity!]!
+  task(id: ID!): TaskEntity!
+  tasks(projectId: ID!): [TaskEntity!]!
+}
+
+input RegisterDto {
+  email: String!
+  name: String!
+  password: String!
+}
+
+type RegisterResponse {
+  accessToken: String!
+  user: UserEntity
+}
+
+type TaskEntity {
+  assigneeId: ID
+  completedAt: DateTime
+  createdAt: DateTime
+  createdById: ID!
+  description: String
+  dueDate: DateTime
+  estimateMinutes: Float
+  id: ID!
+  labels: [String!]!
+  order: Float!
+  parentTaskId: ID
+  priority: TaskPriority!
+  projectId: ID!
+  reporterId: ID!
+  status: TaskStatus!
+  title: String!
+  updatedAt: DateTime
+  watcherIds: [ID!]!
+}
+
+enum TaskPriority {
+  HIGH
+  LOW
+  MEDIUM
+}
+
+enum TaskStatus {
+  BACKLOG
+  BLOCKED
+  DONE
+  IN_PROGRESS
+  IN_REVIEW
+  TODO
+}
+
+input UpdateProjectDto {
+  color: String
+  description: String
+  dueDate: String
+  id: ID!
+  memberIds: [String!]
+  name: String
+  progress: Float
+  startDate: String
+  status: ProjectStatus
+  tags: [String!]
+  visibility: ProjectVisibility
+}
+
+input UpdateTaskDto {
+  assigneeId: ID
+  completedAt: String
+  description: String
+  dueDate: String
+  estimateMinutes: Float
+  id: ID!
+  labels: [String!]
+  order: Float
+  parentTaskId: ID
+  priority: TaskPriority
+  reporterId: ID
+  status: TaskStatus
+  title: String
+  watcherIds: [String!]
+}
+
+input UpdateUserDto {
+  avatarUrl: String
+  bio: String
+  jobTitle: String
+  name: String
+  timezone: String
+}
+
+type UserEntity {
+  avatarUrl: String
+  bio: String
+  email: String!
+  id: String!
+  isActive: Boolean!
+  isEmailVerified: Boolean!
+  jobTitle: String
+  lastLoginAt: DateTime
+  name: String!
+  role: UserRole!
+  timezone: String!
+}
+
+enum UserRole {
+  ADMIN
+  MEMBER
+}
