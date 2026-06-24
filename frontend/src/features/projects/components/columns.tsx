@@ -4,7 +4,7 @@ import { type ColumnDef } from "@tanstack/react-table"
 
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import type { TaskEntity, TaskPriority, TaskStatus } from "@/gql/schema-types"
+import type { TaskEntity} from "@/gql/schema-types"
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { labels, priorities, statuses } from "../data/data"
@@ -79,7 +79,7 @@ export const columns: ColumnDef<TaskEntity>[] = [
             }
 
             return (
-                <div className="flex w-[100px] items-center gap-2">
+                <div className="flex w-25 items-center gap-2">
                     {status.icon && (
                         <status.icon className="size-4 text-muted-foreground" />
                     )}

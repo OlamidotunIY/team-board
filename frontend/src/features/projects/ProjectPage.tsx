@@ -30,9 +30,6 @@ function ProjectPage()
               Here&apos;s a list of your tasks for this month.
             </p>
           </div>
-          {/* <div className="flex items-center gap-2">
-            <UserNav />
-          </div> */}
         </div>
         <DataTable data={data?.tasks as TaskEntity[] ?? []} columns={columns} />
       </div>
