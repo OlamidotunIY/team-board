@@ -31,7 +31,7 @@ export class TaskService {
 
     this.eventClient.emit(taskEvents.created, {
       taskId: task.id,
-      projectId: dto.projectId,
+      projectId: new ObjectId(dto.projectId),
     });
 
     return task;
@@ -41,7 +41,7 @@ export class TaskService {
     await this.projectService.findOneForUser(projectId, user);
     return this.taskModel
       .find({ projectId: new ObjectId(projectId) })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
   }
 
   async findOne(id: string, user: AuthUser) {

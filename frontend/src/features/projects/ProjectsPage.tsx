@@ -11,6 +11,7 @@ import { PATHS } from "@/routing/paths"
 import { useQuery } from "@apollo/client/react"
 import { CalendarDays, Eye, Lock } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import CreateProject from "./components/create-project"
 
 
 function ProjectsPage()
@@ -21,7 +22,7 @@ function ProjectsPage()
     <div className="p-5">
       <div className="flex flex-row justify-between">
         <h1 className="text-3xl font-bold">Projects</h1>
-        <Button>Create Project</Button>
+        <CreateProject />
       </div>
       {data?.projects && (
         <div className="flex flex-row flex-wrap gap-5 mt-5">

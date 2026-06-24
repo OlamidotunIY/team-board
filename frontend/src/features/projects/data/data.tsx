@@ -1,13 +1,15 @@
-import {
-  ArrowDown,
-  ArrowRight,
-  ArrowUp,
-  CheckCircle,
-  Circle,
-  CircleOff,
-  HelpCircle,
-  Timer,
-} from "lucide-react"
+import type { TaskPriority, TaskStatus } from "@/gql/graphql"
+import
+  {
+    ArrowDown,
+    ArrowRight,
+    ArrowUp,
+    CheckCircle,
+    Circle,
+    CircleOff,
+    HelpCircle,
+    Timer,
+  } from "lucide-react"
 
 export const labels = [
   {
@@ -76,3 +78,17 @@ export const priorities = [
     icon: ArrowUp,
   },
 ]
+
+export const TASK_STATUS_OPTIONS: TaskStatus[] = [
+  "BACKLOG",
+  "BLOCKED",
+  "DONE",
+  "IN_PROGRESS",
+  "IN_REVIEW",
+  "TODO"
+]
+export const TASK_PRIORITY_OPTIONS: TaskPriority[] = [
+  "HIGH",
+  "LOW",
+  "MEDIUM"
+] as const

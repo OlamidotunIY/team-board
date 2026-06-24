@@ -39,7 +39,7 @@ export const columns: ColumnDef<TaskEntity>[] = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Task" />
         ),
-        cell: ({ row }) => <div className="w-20">{row.getValue("id")}</div>,
+        cell: ({ row }) => <div className="w-14 truncate">{row.getValue("id")}</div>,
         enableSorting: false,
         enableHiding: false,
     },

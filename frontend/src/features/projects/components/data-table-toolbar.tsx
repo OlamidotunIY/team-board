@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { DataTableViewOptions } from "./data-table-view-options"
 import { priorities, statuses } from "../data/data"
+import CreateTask from "./create-task"
 
 interface DataTableToolbarProps<TData>
 {
@@ -57,7 +58,7 @@ export function DataTableToolbar<TData>({
             </div>
             <div className="flex items-center gap-2">
                 <DataTableViewOptions table={table} />
-                <Button size="sm">Add Task</Button>
+                <CreateTask />
             </div>
         </div>
     )

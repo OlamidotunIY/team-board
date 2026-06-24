@@ -127,16 +127,18 @@ export type ProjectEntity = {
   visibility: ProjectVisibility;
 };
 
-export type ProjectStatus =
-  | 'ACTIVE'
-  | 'ARCHIVED'
-  | 'COMPLETED'
-  | 'ON_HOLD'
-  | 'PLANNING';
+export enum ProjectStatus {
+  Active = 'ACTIVE',
+  Archived = 'ARCHIVED',
+  Completed = 'COMPLETED',
+  OnHold = 'ON_HOLD',
+  Planning = 'PLANNING'
+}
 
-export type ProjectVisibility =
-  | 'PRIVATE'
-  | 'TEAM';
+export enum ProjectVisibility {
+  Private = 'PRIVATE',
+  Team = 'TEAM'
+}
 
 export type Query = {
   __typename?: 'Query';
@@ -197,18 +199,20 @@ export type TaskEntity = {
   watcherIds: Array<Scalars['ID']['output']>;
 };
 
-export type TaskPriority =
-  | 'HIGH'
-  | 'LOW'
-  | 'MEDIUM';
+export enum TaskPriority {
+  High = 'HIGH',
+  Low = 'LOW',
+  Medium = 'MEDIUM'
+}
 
-export type TaskStatus =
-  | 'BACKLOG'
-  | 'BLOCKED'
-  | 'DONE'
-  | 'IN_PROGRESS'
-  | 'IN_REVIEW'
-  | 'TODO';
+export enum TaskStatus {
+  Backlog = 'BACKLOG',
+  Blocked = 'BLOCKED',
+  Done = 'DONE',
+  InProgress = 'IN_PROGRESS',
+  InReview = 'IN_REVIEW',
+  Todo = 'TODO'
+}
 
 export type UpdateProjectDto = {
   color?: InputMaybe<Scalars['String']['input']>;
@@ -264,6 +268,7 @@ export type UserEntity = {
   timezone: Scalars['String']['output'];
 };
 
-export type UserRole =
-  | 'ADMIN'
-  | 'MEMBER';
+export enum UserRole {
+  Admin = 'ADMIN',
+  Member = 'MEMBER'
+}

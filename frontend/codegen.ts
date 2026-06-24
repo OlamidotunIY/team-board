@@ -11,7 +11,7 @@ const config: CodegenConfig = {
     "./src/gql/schema-types.ts": {
       plugins: ["typescript"],
       config: {
-        enumsAsTypes: true,
+        enumsAsTypes: false,
         avoidOptionals: false,
         maybeValue: "T | null",
       },
