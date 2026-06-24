@@ -34,11 +34,22 @@ cp .env.example .env
 pnpm run start:dev
 ```
 
-GraphQL runs at:
+GraphQL runs at (backend):
 
 ```bash
-http://localhost:3000/graphql
+http://localhost:3100/graphql
 ```
+
+## Frontend Local Setup
+
+```bash
+cd frontend
+pnpm install
+cp .env.example .env
+pnpm run dev
+```
+
+The frontend dev server runs at `http://localhost:5173` by default. The frontend reads the GraphQL endpoint from `VITE_GRAPHQL_URL` (falls back to `http://localhost:3100/graphql`).
 
 ## Docker Setup
 
@@ -48,9 +59,9 @@ pnpm run docker:logs
 pnpm run docker:down
 ```
 
-Compose starts:
+- Compose starts:
 
-- Backend: `http://localhost:3000/graphql`
+- Backend: `http://localhost:3100/graphql`
 - MongoDB: `localhost:27017`
 - RabbitMQ: `localhost:5672`
 - RabbitMQ management UI: `http://localhost:15672` with `teamboard / teamboard`
@@ -58,7 +69,7 @@ Compose starts:
 ## Environment
 
 ```bash
-PORT=3000
+PORT=3100
 MONGODB_URI=mongodb://localhost:27017/teamboard
 JWT_ACCESS_SECRET=replace-with-a-long-random-secret
 JWT_REFRESH_SECRET=replace-with-a-different-long-random-secret
@@ -66,6 +77,15 @@ JWT_ACCESS_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=30d
 RABBITMQ_URL=amqp://teamboard:teamboard@localhost:5672
 RABBITMQ_QUEUE=teamboard_events
+```
+
+Frontend environment (frontend/.env or frontend/.env.local)
+
+```bash
+# Vite client settings
+VITE_GRAPHQL_URL=http://localhost:3100/graphql
+NEXT_PUBLIC_GRAPHQL_WS_URL=ws://localhost:3100/graphql
+NEXT_PUBLIC_APP_VERSION=web-unknown
 ```
 
 If JWT secrets are not provided locally, the app uses generated development fallbacks from `src/auth/constants.ts`. For production, always set real environment secrets.
