@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
+import
+{
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form";
@@ -19,13 +19,16 @@ import { REGISTER_MUTATION } from "@/graphql/auth/register.mutation";
 import { toast } from "sonner";
 import { ToastMessage } from "@/components/custom/ToastMessage";
 import { PATHS } from "@/routing/paths";
+import { Eye, EyeOff, Lock, Mail, User2 } from "lucide-react";
+import { extractGraphQLErrors } from "@/lib/graphql";
 
-function RegisterPage() {
-   const [showPassword, setShowPassword] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
+function RegisterPage()
+{
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const [registerMutation] = useMutation<RegisterMutation, RegisterMutationVariables>(REGISTER_MUTATION)
+  const [registerMutation] = useMutation<RegisterMutation, RegisterMutationVariables>(REGISTER_MUTATION)
 
 
   const {
@@ -36,7 +39,7 @@ function RegisterPage() {
     resolver: zodResolver(signUpSchema),
   });
 
-    const onSubmit = async (data: SignUpFormData) =>
+  const onSubmit = async (data: SignUpFormData) =>
   {
     setIsLoading(true);
     try
@@ -47,12 +50,13 @@ function RegisterPage() {
             ...data
           }
         },
-        onError()
+        onError(error)
         {
+          const extractedError = extractGraphQLErrors(error)[0]
           toast.error(
             <ToastMessage
-              title="Login failed"
-              description="Invalid email or password. Please try again."
+              title={`Registration failed: ${extractedError.extensions?.code}`}
+              description={extractedError.message}
             />
           );
         },
@@ -64,7 +68,7 @@ function RegisterPage() {
               description="Welcome back! Redirecting to dashboard..."
             />
           );
-          navigate("/dashboard");
+          navigate(PATHS.root);
         }
       })
 
@@ -93,45 +97,73 @@ function RegisterPage() {
         </div>
         <Field>
           <FieldLabel htmlFor="name">Full Name</FieldLabel>
-          <Input
-            id="name"
-            type="text"
-            placeholder="John Doe"
-            required
-            className="bg-background"
-            {...register("name")}
-          />
+          <div className="relative">
+            <User2 className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Input
+              id="name"
+              type="text"
+              placeholder="John Doe"
+              required
+              className="bg-background pl-10"
+              {...register("name")}
+            />
+          </div>
+          {errors.name && (
+            <p className="text-sm text-red-600">
+              {errors.name.message}
+            </p>
+          )}
         </Field>
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input
-            id="email"
-            type="email"
-            placeholder="m@example.com"
-            required
-            className="bg-background"
-            {...register("email")}
-          />
-          <FieldDescription>
-            We&apos;ll use this to contact you. We will not share your email
-            with anyone else.
-          </FieldDescription>
+          <div className="relative">
+            <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Input id="email" type="email" placeholder="m@example.com" className="pl-10" required {...register("email")} />
+          </div>
+          {errors.email ? (
+            <FieldDescription className="text-sm text-red-600">
+              {errors.email.message}
+            </FieldDescription>
+          ) : (
+            <FieldDescription>
+              We&apos;ll use this to contact you. We will not share your email
+              with anyone else.
+            </FieldDescription>
+          )}
+
         </Field>
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
-          <Input
-            id="password"
-            type="password"
-            required
-            className="bg-background"
-            {...register("email")}
-          />
-          <FieldDescription>
-            Must be at least 8 characters long.
-          </FieldDescription>
+          <div className="relative">
+            <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Input id="password" type={showPassword ? "text" : "password"} className="pl-10 pr-10" required {...register("password")} />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+            >
+              {showPassword ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+            </button>
+          </div>
+          {errors.password ? (
+            <p className="text-sm text-red-600">
+              {errors.password.message}
+            </p>
+          ) : (
+            <FieldDescription>
+              Must be at least 8 characters long.
+            </FieldDescription>
+          )}
+
         </Field>
         <Field>
-          <Button type="submit">Create Account</Button>
+          <Button type="submit">
+            {isLoading ? "Creating account..." : "Create Account"}
+          </Button>
         </Field>
         <Field>
           <FieldDescription className="px-6 text-center">

@@ -28,6 +28,7 @@ import { Controller, useForm } from "react-hook-form"
 import { useMutation } from "@apollo/client/react"
 import { CREATE_PROJECT } from "@/graphql/project/create-project.quary"
 import { LIST_PROJECTS } from "@/graphql/project/list-project.quary"
+import { Plus } from "lucide-react"
 
 function CreateProject()
 {
@@ -102,7 +103,10 @@ function CreateProject()
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button>Create Project</Button>
+                <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Project
+                </Button>
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-lg overflow-y-scroll h-[85%]">

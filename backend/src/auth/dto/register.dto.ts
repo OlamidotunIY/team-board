@@ -25,6 +25,6 @@ export class RegisterResponse {
   @Field(() => UserEntity, { nullable: true })
   user?: UserEntity;
 
-  @Field()
-  accessToken!: string;
+  @Field({ nullable: true })
+  accessToken?: string;
 }

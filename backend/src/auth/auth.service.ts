@@ -156,6 +156,6 @@ export class AuthService {
   async logout(res: Response) {
     res.clearCookie(authCookieNames.accessToken);
     res.clearCookie(authCookieNames.refreshToken);
-    return { message: 'Logged out' };
+    return "Logout successful";
   }
 }

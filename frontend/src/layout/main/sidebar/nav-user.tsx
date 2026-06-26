@@ -2,12 +2,8 @@
 
 import
 {
-    BadgeCheck,
-    Bell,
     ChevronsUpDown,
-    CreditCard,
     LogOut,
-    Sparkles,
 } from "lucide-react"
 
 import
@@ -20,7 +16,6 @@ import
 {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
@@ -34,11 +29,31 @@ import
     useSidebar,
 } from "@/components/ui/sidebar"
 import { useUserStore } from "@/store/UserStore"
+import { useMutation } from "@apollo/client/react"
+import type { LogoutMutation } from "@/gql/graphql"
+import { LOGOUT_MUTATION } from "@/graphql/auth/logout.mutation"
+import { Button } from "@/components/ui/button"
+import { useNavigate } from "react-router-dom"
+import { PATHS } from "@/routing/paths"
 
 export function NavUser()
 {
     const { isMobile } = useSidebar()
-    const {user} = useUserStore()
+    const { user, setUser } = useUserStore()
+
+    const [logoutMutation] = useMutation<LogoutMutation>(LOGOUT_MUTATION)
+    const navigate = useNavigate()
+
+    const handleLogout = () =>
+    {
+        logoutMutation({
+            onCompleted()
+            {
+                setUser(null)
+                navigate(PATHS.auth.login)
+            },
+        })
+    }
 
     return (
         <SidebarMenu>
@@ -83,9 +98,11 @@ export function NavUser()
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                            <LogOut />
-                            Log out
+                        <DropdownMenuItem asChild>
+                            <Button className="w-full" variant={"destructive"} onClick={handleLogout}>
+                                <LogOut />
+                                Log out
+                            </Button>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

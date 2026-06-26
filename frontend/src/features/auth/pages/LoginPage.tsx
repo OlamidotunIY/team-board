@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button"
 import
 {
   Field,
+  FieldDescription,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginFormData } from "@/lib/validations";
@@ -18,7 +19,7 @@ import { ToastMessage } from "@/components/custom/ToastMessage";
 import { useMutation } from "@apollo/client/react";
 import { LOGIN_MUTATION } from "@/graphql/auth/login.mutation";
 import type { LoginMutation, LoginMutationVariables } from "@/gql/graphql";
-import { Eye, EyeOff, Lock, User2 } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { PATHS } from "@/routing/paths";
 
 
@@ -99,7 +100,7 @@ function LoginPage()
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <div className="relative">
-            <User2 className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input id="email" type="email" placeholder="m@example.com" className="pl-10" required {...register("email")} />
           </div>
           {errors.email && (
@@ -143,6 +144,11 @@ function LoginPage()
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? "Signing in..." : "Login"}
           </Button>
+        </Field>
+        <Field>
+          <FieldDescription className="px-6 text-center">
+            Don't have an account? <Link to={PATHS.auth.signup}>Sign up</Link>
+          </FieldDescription>
         </Field>
       </FieldGroup>
     </form>
